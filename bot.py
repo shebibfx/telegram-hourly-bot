@@ -2,8 +2,10 @@ import requests
 import time
 from datetime import datetime, timedelta
 
-BOT_TOKEN = "YOUR_BOT_TOKEN"
-CHAT_ID = "YOUR_CHAT_ID"
+import os
+
+BOT_TOKEN = os.environ["BOT_TOKEN"]
+CHAT_ID = os.environ["CHAT_ID"]
 
 def send_message():
     try:
