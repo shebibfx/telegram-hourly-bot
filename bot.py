@@ -1,32 +1,28 @@
 import requests
-import time
-from datetime import datetime, timedelta
-
+from flask import Flask
 import os
+
+app = Flask(__name__)
 
 BOT_TOKEN = os.environ["BOT_TOKEN"]
 CHAT_ID = os.environ["CHAT_ID"]
 
 def send_message():
-    try:
-        url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-        data = {
-            "chat_id": CHAT_ID,
-            "text": "Check market candle"
-        }
-        requests.post(url, data=data)
-        print("Sent at:", datetime.now())
-    except Exception as e:
-        print("Error:", e)
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    data = {
+        "chat_id": CHAT_ID,
+        "text": "Check market candle"
+    }
+    requests.post(url, data=data)
 
-def wait_until_next_hour():
-    now = datetime.now()
-    next_hour = (now.replace(minute=0, second=0, microsecond=0) 
-                 + timedelta(hours=1))
-    sleep_seconds = (next_hour - now).total_seconds()
-    time.sleep(sleep_seconds)
+@app.route("/")
+def home():
+    return "Bot is alive"
 
-# Main loop
-while True:
-    wait_until_next_hour()  # wait until :00
+@app.route("/send")
+def trigger():
     send_message()
+    return "Message sent"
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
